@@ -230,6 +230,16 @@ function App() {
     return () => window.clearTimeout(timer)
   }, [toast])
 
+  useEffect(() => {
+    // iOS Safari 需要存在 touchstart 监听才会触发按钮的 :active 按压反馈。
+    const enableActiveState = () => {}
+    document.addEventListener('touchstart', enableActiveState, {
+      passive: true,
+    })
+    return () =>
+      document.removeEventListener('touchstart', enableActiveState)
+  }, [])
+
   const sound = (effect: SoundEffect) => {
     if (soundEnabled) void playSound(effect)
   }
@@ -270,7 +280,11 @@ function App() {
   }
 
   const selectCell = (index: number) => {
-    if (index !== game.selected) sound('select')
+    if (index === game.selected) {
+      setGame((current) => ({ ...current, selected: null }))
+      return
+    }
+    sound('select')
     setGame((current) => ({ ...current, selected: index }))
   }
 

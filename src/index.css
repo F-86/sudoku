@@ -141,9 +141,11 @@ a:focus-visible {
   transition: color 160ms ease, background 160ms ease;
 }
 
-.difficulty-nav button:hover {
-  color: var(--blue);
-  background: rgba(47, 97, 192, 0.06);
+@media (hover: hover) {
+  .difficulty-nav button:hover {
+    color: var(--blue);
+    background: rgba(47, 97, 192, 0.06);
+  }
 }
 
 .difficulty-nav button::after {
@@ -191,11 +193,13 @@ a:focus-visible {
   transition: color 160ms ease, background 160ms ease, border-color 160ms ease, transform 160ms ease;
 }
 
-.sound-button:hover {
-  color: white;
-  border-color: var(--blue);
-  background: var(--blue);
-  transform: translateY(-1px);
+@media (hover: hover) {
+  .sound-button:hover {
+    color: white;
+    border-color: var(--blue);
+    background: var(--blue);
+    transform: translateY(-1px);
+  }
 }
 
 .sound-button.muted {
@@ -320,8 +324,10 @@ a:focus-visible {
   border-bottom: 3px solid var(--line-strong);
 }
 
-.cell:hover {
-  background: #f3f7fd;
+@media (hover: hover) {
+  .cell:hover {
+    background: #f3f7fd;
+  }
 }
 
 .cell.peer {
@@ -550,11 +556,18 @@ a:focus-visible {
   transition: color 160ms ease, background 160ms ease, transform 160ms ease;
 }
 
-.actions button:hover:not(:disabled) .action-icon,
 .actions button.active .action-icon {
   color: white;
   background: var(--blue);
   transform: translateY(-2px);
+}
+
+@media (hover: hover) {
+  .actions button:hover:not(:disabled) .action-icon {
+    color: white;
+    background: var(--blue);
+    transform: translateY(-2px);
+  }
 }
 
 .action-icon svg {
@@ -619,11 +632,13 @@ a:focus-visible {
   transition: color 140ms ease, background 140ms ease, transform 140ms ease, box-shadow 140ms ease;
 }
 
-.number-pad button:hover:not(:disabled) {
-  color: white;
-  background: var(--blue);
-  box-shadow: 0 10px 24px rgba(47, 97, 192, 0.22);
-  transform: translateY(-2px);
+@media (hover: hover) {
+  .number-pad button:hover:not(:disabled) {
+    color: white;
+    background: var(--blue);
+    box-shadow: 0 10px 24px rgba(47, 97, 192, 0.22);
+    transform: translateY(-2px);
+  }
 }
 
 .number-pad button:active:not(:disabled) {
@@ -661,9 +676,11 @@ a:focus-visible {
   transition: transform 150ms ease, box-shadow 150ms ease;
 }
 
-.primary:hover {
-  box-shadow: 0 15px 30px rgba(47, 97, 192, 0.3);
-  transform: translateY(-2px);
+@media (hover: hover) {
+  .primary:hover {
+    box-shadow: 0 15px 30px rgba(47, 97, 192, 0.3);
+    transform: translateY(-2px);
+  }
 }
 
 .primary:active {
@@ -1053,10 +1070,12 @@ footer p {
     box-shadow: none;
   }
 
-  .sound-button:hover {
-    color: var(--blue);
-    background: var(--blue-soft);
-    transform: none;
+  @media (hover: hover) {
+    .sound-button:hover {
+      color: var(--blue);
+      background: var(--blue-soft);
+      transform: none;
+    }
   }
 
   .sound-button.muted {
@@ -1354,11 +1373,18 @@ footer p {
     background: transparent;
   }
 
-  .actions button:hover:not(:disabled) .action-icon,
   .actions button.active .action-icon {
     color: var(--blue);
     background: transparent;
     transform: none;
+  }
+
+  @media (hover: hover) {
+    .actions button:hover:not(:disabled) .action-icon {
+      color: var(--blue);
+      background: transparent;
+      transform: none;
+    }
   }
 
   .action-icon svg {
@@ -1400,11 +1426,18 @@ footer p {
     background: transparent;
   }
 
-  .number-pad button:hover:not(:disabled) {
+  .number-pad button:active:not(:disabled) {
     color: white;
     background: var(--blue);
-    box-shadow: none;
-    transform: none;
+  }
+
+  @media (hover: hover) {
+    .number-pad button:hover:not(:disabled) {
+      color: white;
+      background: var(--blue);
+      box-shadow: none;
+      transform: none;
+    }
   }
 
   .number-pad button:disabled {
