@@ -964,17 +964,42 @@ footer p {
     background: #e8eef7;
   }
 
+  html,
+  body,
+  #root {
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
   body {
     background: #e8eef7;
   }
 
   .app {
-    overflow-x: clip;
-    min-height: auto;
+    --mobile-pad-top: max(8px, env(safe-area-inset-top));
+    --mobile-pad-bottom: max(10px, env(safe-area-inset-bottom));
+    --mobile-topbar-height: clamp(52px, 8dvh, 68px);
+    --mobile-status-height: clamp(46px, 7dvh, 58px);
+    --mobile-game-gap: clamp(5px, 1.4dvh, 11px);
+    --mobile-actions-height: clamp(52px, 9dvh, 72px);
+    --mobile-controls-gap: clamp(2px, 0.6dvh, 5px);
+    --mobile-number-height: clamp(46px, 7.2dvh, 57px);
+    display: grid;
+    grid-template-rows:
+      var(--mobile-topbar-height)
+      var(--mobile-status-height)
+      minmax(0, 1fr);
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
     padding:
-      max(10px, env(safe-area-inset-top))
+      var(--mobile-pad-top)
       max(8px, env(safe-area-inset-right))
-      max(22px, env(safe-area-inset-bottom))
+      var(--mobile-pad-bottom)
       max(8px, env(safe-area-inset-left));
     border-radius: 0 0 13px 13px;
     background: #fff;
@@ -984,7 +1009,8 @@ footer p {
   .topbar {
     grid-template-columns: 44px minmax(0, 1fr) 44px;
     gap: 6px;
-    min-height: 68px;
+    height: var(--mobile-topbar-height);
+    min-height: 0;
   }
 
   .mobile-header-action {
@@ -1068,9 +1094,11 @@ footer p {
   .mobile-statusbar {
     display: grid;
     grid-template-columns: 1fr 0.9fr 1fr 1.35fr;
-    align-items: end;
+    align-items: center;
+    height: var(--mobile-status-height);
+    min-height: 0;
     gap: 4px;
-    padding: 10px 4px 9px;
+    padding: clamp(3px, 0.8dvh, 7px) 4px;
   }
 
   .mobile-status {
@@ -1150,22 +1178,52 @@ footer p {
   }
 
   .game-shell {
-    gap: 14px;
+    display: grid;
+    grid-template-rows: auto auto;
+    align-content: start;
+    align-items: stretch;
+    height: 100%;
+    min-height: 0;
+    gap: var(--mobile-game-gap);
     padding: 0;
+    overflow: hidden;
   }
 
-  .board-column,
+  .board-column {
+    display: grid;
+    width: 100%;
+    min-height: 0;
+    place-items: start center;
+  }
+
   .control-panel {
+    display: grid;
+    grid-template-rows: var(--mobile-actions-height) var(--mobile-number-height);
     width: 100%;
     max-width: none;
+    min-height: 0;
+    gap: var(--mobile-controls-gap);
   }
 
   .board-wrap {
+    width: min(100%, calc(
+      100dvh
+      - var(--mobile-pad-top)
+      - var(--mobile-pad-bottom)
+      - var(--mobile-topbar-height)
+      - var(--mobile-status-height)
+      - var(--mobile-game-gap)
+      - var(--mobile-actions-height)
+      - var(--mobile-controls-gap)
+      - var(--mobile-number-height)
+    ));
+    min-width: 0;
     border-radius: 2px;
     box-shadow: none;
   }
 
   .sudoku-board {
+    width: 100%;
     border-width: 2px;
     border-radius: 2px;
     touch-action: manipulation;
@@ -1180,26 +1238,30 @@ footer p {
   }
 
   .cell-value {
-    font-size: clamp(22px, 7.7vw, 36px);
+    font-size: clamp(18px, min(7.7vw, 5dvh), 36px);
   }
 
   .notes-grid i {
-    font-size: clamp(6px, 1.8vw, 8px);
+    font-size: clamp(6px, min(1.8vw, 1.3dvh), 8px);
   }
 
   .actions {
+    height: var(--mobile-actions-height);
+    min-height: 0;
     gap: 0;
-    margin: 0 0 5px;
+    margin: 0;
   }
 
   .actions > button {
-    min-height: 76px;
+    height: 100%;
+    min-height: 0;
+    align-content: center;
   }
 
   .action-icon {
     width: 48px;
-    height: 43px;
-    margin-bottom: 2px;
+    height: clamp(31px, 5.2dvh, 43px);
+    margin-bottom: clamp(0px, 0.4dvh, 2px);
     border-radius: 0;
     color: #748399;
     background: transparent;
@@ -1236,12 +1298,15 @@ footer p {
 
   .number-pad {
     grid-template-columns: repeat(9, minmax(0, 1fr));
+    height: var(--mobile-number-height);
+    min-height: 0;
     gap: 0;
   }
 
   .number-pad button {
     min-width: 0;
-    min-height: 61px;
+    height: 100%;
+    min-height: 0;
     padding: 0;
     border-radius: 5px;
     color: var(--blue);
@@ -1284,16 +1349,8 @@ footer p {
 }
 
 @media (max-width: 420px) and (orientation: portrait) {
-  .game-shell {
-    gap: 11px;
-  }
-
-  .actions > button {
-    min-height: 72px;
-  }
-
-  .number-pad button {
-    min-height: 57px;
+  .app {
+    --mobile-game-gap: clamp(4px, 1.2dvh, 9px);
   }
 }
 
