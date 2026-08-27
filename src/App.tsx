@@ -269,6 +269,9 @@ function App() {
     setGame((current) => ({ ...current, selected: index }))
   }
 
+  const isLockedCorrectly = (index: number) =>
+    game.board[index] !== 0 && game.board[index] === game.solution[index]
+
   const enterNumber = (value: number) => {
     const index = game.selected
     if (
@@ -278,6 +281,18 @@ function App() {
       game.completed ||
       gameOver
     ) {
+      return
+    }
+
+    if (numberCounts[value - 1] >= 9) {
+      sound('error')
+      setToast(`数字 ${value} 已全部填完`)
+      return
+    }
+
+    if (isLockedCorrectly(index)) {
+      sound('error')
+      setToast('这一格已填对，不能再修改')
       return
     }
 
@@ -327,6 +342,11 @@ function App() {
       game.paused ||
       game.completed
     ) {
+      return
+    }
+    if (isLockedCorrectly(index)) {
+      sound('error')
+      setToast('这一格已填对，不能再修改')
       return
     }
     if (game.board[index] === 0 && game.notes[index] === 0) return
@@ -583,10 +603,7 @@ function App() {
       <section className="game-shell" id="game">
         <div className="board-column">
           <div className="board-heading">
-            <div>
-              <span className="eyebrow">{difficulty.label}模式</span>
-              <h1>专注当下这一格</h1>
-            </div>
+            <h1 className="eyebrow">{difficulty.label}模式</h1>
             <span className="progress-label">完成度 {progress}%</span>
           </div>
 
@@ -633,13 +650,20 @@ function App() {
                       <span className="cell-value">{value}</span>
                     ) : (
                       <span className="notes-grid" aria-hidden="true">
-                        {Array.from({ length: 9 }, (_, noteIndex) => (
-                          <i key={noteIndex}>
-                            {game.notes[index] & (1 << (noteIndex + 1))
-                              ? noteIndex + 1
-                              : ''}
-                          </i>
-                        ))}
+                        {Array.from({ length: 9 }, (_, noteIndex) => {
+                          const noted =
+                            (game.notes[index] & (1 << (noteIndex + 1))) !== 0
+                          const highlight =
+                            noted && selectedValue === noteIndex + 1
+                          return (
+                            <i
+                              key={noteIndex}
+                              className={highlight ? 'note-highlight' : ''}
+                            >
+                              {noted ? noteIndex + 1 : ''}
+                            </i>
+                          )
+                        })}
                       </span>
                     )}
                   </button>
@@ -784,7 +808,7 @@ function App() {
       </section>
 
       <footer>
-        <p>每一步都算数。</p>
+        <p>专注当下这一格，每一步都算数。</p>
         <span>题目均为随机生成，并经过唯一解校验</span>
       </footer>
 
