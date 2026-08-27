@@ -952,7 +952,7 @@ footer p {
 
 @media (max-width: 560px) {
   :root {
-    background: #e8eef7;
+    background: #fbfcfe;
   }
 
   html,
@@ -965,7 +965,7 @@ footer p {
   }
 
   body {
-    background: #e8eef7;
+    background: #fbfcfe;
   }
 
   .app {
