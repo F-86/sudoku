@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v8'
+const CACHE_VERSION = 'v9'
 const CACHE_PREFIX = 'sudoku-'
 const CACHE_NAME = `${CACHE_PREFIX}${CACHE_VERSION}`
 const BASE_PATH = new URL(self.registration.scope).pathname

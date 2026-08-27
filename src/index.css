@@ -257,33 +257,12 @@ a:focus-visible {
   justify-self: center;
 }
 
-.board-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 12px;
-}
-
-.eyebrow,
 .result-kicker {
   color: var(--blue);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-}
-
-.board-heading h1 {
-  margin: 0;
-}
-
-.progress-label {
-  padding-bottom: 3px;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 600;
-  white-space: nowrap;
 }
 
 .board-wrap {
@@ -812,10 +791,6 @@ footer p {
     width: min(760px, 100%, calc(100dvh - 200px));
   }
 
-  .board-heading {
-    margin-bottom: clamp(8px, 1.4vh, 14px);
-  }
-
   .control-panel {
     display: grid;
     grid-template-rows: auto auto minmax(0, 1fr) auto auto;
@@ -1040,7 +1015,6 @@ footer p {
   .score-block,
   .difficulty-nav,
   .progress-track,
-  .board-heading,
   .stats,
   .new-game,
   .keyboard-tip,

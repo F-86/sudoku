@@ -602,11 +602,6 @@ function App() {
 
       <section className="game-shell" id="game">
         <div className="board-column">
-          <div className="board-heading">
-            <h1 className="eyebrow">{difficulty.label}模式</h1>
-            <span className="progress-label">完成度 {progress}%</span>
-          </div>
-
           <div className="board-wrap">
             <div className="sudoku-board" role="grid" aria-label="9乘9数独棋盘">
               {game.board.map((value, index) => {
