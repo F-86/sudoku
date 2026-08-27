@@ -27,13 +27,17 @@
 html {
   min-width: 320px;
   min-height: 100%;
+  overflow-x: hidden;
   scroll-behavior: smooth;
 }
 
 body {
   min-width: 320px;
   min-height: 100vh;
+  min-height: 100dvh;
   margin: 0;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
   background:
     radial-gradient(circle at 7% 3%, rgba(167, 201, 242, 0.22), transparent 25rem),
     linear-gradient(180deg, #fbfcfe 0%, #f3f6fa 75%, #eef3f8 100%);
@@ -41,6 +45,7 @@ body {
 
 button,
 a {
+  touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -57,8 +62,13 @@ a:focus-visible {
 .app {
   width: min(1500px, 100%);
   min-height: 100vh;
+  min-height: 100dvh;
   margin: 0 auto;
-  padding: 26px clamp(22px, 4vw, 68px) 30px;
+  padding:
+    max(26px, env(safe-area-inset-top))
+    max(clamp(22px, 4vw, 68px), env(safe-area-inset-right))
+    max(30px, env(safe-area-inset-bottom))
+    max(clamp(22px, 4vw, 68px), env(safe-area-inset-left));
 }
 
 .topbar {
@@ -801,7 +811,21 @@ footer p {
 
 @media (max-width: 560px) {
   .app {
-    padding: 14px 12px 24px;
+    overflow-x: hidden;
+    padding:
+      max(14px, env(safe-area-inset-top))
+      max(12px, env(safe-area-inset-right))
+      max(24px, env(safe-area-inset-bottom))
+      max(12px, env(safe-area-inset-left));
+  }
+
+  .topbar {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .brand,
+  .score-block {
+    min-width: 0;
   }
 
   .brand small,
@@ -816,9 +840,9 @@ footer p {
   }
 
   .brand-mark {
-    width: 25px;
-    height: 25px;
-    grid-template-columns: repeat(2, 8px);
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
   }
 
   .score-block strong {
@@ -826,8 +850,14 @@ footer p {
   }
 
   .difficulty-nav {
-    margin-inline: -12px;
-    padding-inline: 8px;
+    margin-inline: calc(-1 * max(12px, env(safe-area-inset-left)));
+    padding-inline: max(8px, env(safe-area-inset-left));
+    scroll-snap-type: x proximity;
+  }
+
+  .difficulty-nav button {
+    min-height: 44px;
+    scroll-snap-align: start;
   }
 
   .game-shell {
@@ -848,6 +878,7 @@ footer p {
 
   .sudoku-board {
     border-width: 2px;
+    touch-action: manipulation;
   }
 
   .cell.box-right {
@@ -870,9 +901,19 @@ footer p {
     margin-bottom: 18px;
   }
 
+  .pause-button {
+    width: 44px;
+    height: 44px;
+    top: 3px;
+  }
+
   .actions {
     gap: 3px;
     margin-bottom: 14px;
+  }
+
+  .actions > button {
+    min-height: 84px;
   }
 
   .action-icon {
@@ -896,6 +937,34 @@ footer p {
 
   footer {
     justify-content: center;
+  }
+}
+
+@media (max-width: 420px) and (orientation: portrait) {
+  .board-heading h1 {
+    font-size: 20px;
+  }
+
+  .game-shell {
+    gap: 26px;
+  }
+
+  .actions strong {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 340px) {
+  .topbar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .score-block {
+    display: none;
+  }
+
+  .difficulty-nav {
+    grid-column: 1;
   }
 }
 

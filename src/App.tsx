@@ -388,7 +388,7 @@ function App() {
         <a className="brand" href="#game" aria-label="Sudoku 首页">
           <img
             className="brand-mark"
-            src="/sudoku-icon.png"
+            src={`${import.meta.env.BASE_URL}sudoku-icon.png`}
             alt=""
             aria-hidden="true"
           />

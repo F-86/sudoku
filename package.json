@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --configLoader native",
     "build": "tsc -b && vite build --configLoader native",
+    "build:pages": "tsc -b && vite build --mode pages --configLoader native",
     "lint": "eslint .",
     "preview": "vite preview --configLoader native"
   },
