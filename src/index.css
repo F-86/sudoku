@@ -952,7 +952,7 @@ footer p {
 
 @media (max-width: 560px) {
   :root {
-    background: #fbfcfe;
+    background: #ffffff;
   }
 
   html,
@@ -965,7 +965,7 @@ footer p {
   }
 
   body {
-    background: #fbfcfe;
+    background: #ffffff;
   }
 
   .app {
@@ -992,9 +992,9 @@ footer p {
       max(8px, env(safe-area-inset-right))
       var(--mobile-pad-bottom)
       max(8px, env(safe-area-inset-left));
-    border-radius: 0 0 13px 13px;
+    border-radius: 0;
     background: #fff;
-    box-shadow: 0 12px 30px rgba(35, 63, 96, 0.1);
+    box-shadow: none;
   }
 
   .topbar {
