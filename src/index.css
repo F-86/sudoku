@@ -772,6 +772,104 @@ footer p {
   }
 }
 
+@media (min-width: 861px) {
+  html,
+  body,
+  #root {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .app {
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    padding-top: max(clamp(14px, 2.2vh, 22px), env(safe-area-inset-top));
+    padding-bottom: max(clamp(12px, 2vh, 20px), env(safe-area-inset-bottom));
+  }
+
+  .topbar {
+    min-height: clamp(54px, 7.5vh, 68px);
+  }
+
+  .progress-track {
+    margin-top: clamp(5px, 1vh, 10px);
+  }
+
+  .game-shell {
+    height: 100%;
+    min-height: 0;
+    padding: clamp(10px, 1.8vh, 18px) 0 clamp(8px, 1.4vh, 14px);
+    overflow: hidden;
+  }
+
+  .board-column {
+    width: min(760px, 100%, calc(100dvh - 230px));
+  }
+
+  .board-heading {
+    margin-bottom: clamp(8px, 1.4vh, 14px);
+  }
+
+  .board-heading h1 {
+    font-size: clamp(22px, 2.2vw, 30px);
+  }
+
+  .control-panel {
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+    align-self: center;
+    height: min(100%, 560px);
+    min-height: 0;
+  }
+
+  .stats {
+    margin-bottom: clamp(10px, 1.8vh, 18px);
+  }
+
+  .actions {
+    margin-bottom: clamp(8px, 1.4vh, 14px);
+  }
+
+  .action-icon {
+    width: clamp(48px, 6.5vh, 64px);
+    height: clamp(48px, 6.5vh, 64px);
+    margin-bottom: clamp(3px, 0.7vh, 6px);
+  }
+
+  .number-pad {
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+    min-height: 0;
+    gap: clamp(6px, 1vh, 9px);
+  }
+
+  .number-pad button {
+    height: 100%;
+    min-height: 0;
+    padding: clamp(5px, 1vh, 9px);
+  }
+
+  .number-pad strong {
+    font-size: clamp(28px, 4.5vh, 40px);
+  }
+
+  .new-game {
+    min-height: clamp(50px, 7vh, 62px);
+    margin-top: clamp(7px, 1.1vh, 11px);
+    font-size: clamp(15px, 2vh, 18px);
+  }
+
+  .keyboard-tip {
+    margin-top: clamp(6px, 1vh, 10px);
+  }
+
+  footer {
+    padding-top: clamp(4px, 0.8vh, 7px);
+  }
+}
+
 @media (max-width: 1050px) {
   .app {
     padding-inline: 24px;
@@ -792,8 +890,8 @@ footer p {
   }
 
   .game-shell {
-    grid-template-columns: minmax(460px, 1fr) 340px;
-    gap: 28px;
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 340px);
+    gap: clamp(18px, 3vw, 28px);
   }
 }
 
