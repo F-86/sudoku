@@ -6,8 +6,17 @@ import {
   formatTime,
   type DifficultyId,
 } from './game.ts'
+import { playSound, type SoundEffect } from './sounds.ts'
 
-type IconName = 'undo' | 'erase' | 'note' | 'hint' | 'pause' | 'play'
+type IconName =
+  | 'undo'
+  | 'erase'
+  | 'note'
+  | 'hint'
+  | 'pause'
+  | 'play'
+  | 'sound'
+  | 'mute'
 
 interface GameState {
   difficulty: DifficultyId
@@ -29,8 +38,17 @@ type Snapshot = Pick<
 >
 
 const STORAGE_KEY = 'sudoku-state-v1'
+const SOUND_STORAGE_KEY = 'sudoku-sound-enabled'
 const LEGACY_STORAGE_KEY = ['sudoku', 'game', 'state', 'v1'].join('-')
 const MAX_MISTAKES = 3
+
+function loadSoundEnabled() {
+  try {
+    return localStorage.getItem(SOUND_STORAGE_KEY) !== 'false'
+  } catch {
+    return true
+  }
+}
 
 function makeGame(difficulty: DifficultyId): GameState {
   const { puzzle, solution } = createPuzzle(difficulty)
@@ -122,6 +140,18 @@ function Icon({ name }: { name: IconName }) {
         </>
       )}
       {name === 'play' && <path d="m9 7 8 5-8 5V7Z" />}
+      {name === 'sound' && (
+        <>
+          <path d="M11 5 7 9H4v6h3l4 4V5Z" />
+          <path d="M15 9.5a4 4 0 0 1 0 5M17.5 7a7.5 7.5 0 0 1 0 10" />
+        </>
+      )}
+      {name === 'mute' && (
+        <>
+          <path d="M11 5 7 9H4v6h3l4 4V5Z" />
+          <path d="m15 10 5 5M20 10l-5 5" />
+        </>
+      )}
     </svg>
   )
 }
@@ -130,6 +160,7 @@ function App() {
   const [game, setGame] = useState<GameState>(loadGame)
   const [history, setHistory] = useState<Snapshot[]>([])
   const [notesMode, setNotesMode] = useState(false)
+  const [soundEnabled, setSoundEnabled] = useState(loadSoundEnabled)
   const [toast, setToast] = useState('')
 
   const difficulty =
@@ -166,6 +197,14 @@ function App() {
   }, [game])
 
   useEffect(() => {
+    try {
+      localStorage.setItem(SOUND_STORAGE_KEY, String(soundEnabled))
+    } catch {
+      // 存储不可用时，音效开关仍在当前页面内有效。
+    }
+  }, [soundEnabled])
+
+  useEffect(() => {
     if (game.paused || game.completed || gameOver) return
     const timer = window.setInterval(() => {
       setGame((current) => ({ ...current, elapsed: current.elapsed + 1 }))
@@ -179,15 +218,48 @@ function App() {
     return () => window.clearTimeout(timer)
   }, [toast])
 
+  const sound = (effect: SoundEffect) => {
+    if (soundEnabled) void playSound(effect)
+  }
+
   const remember = () => {
     setHistory((current) => [...current.slice(-39), takeSnapshot(game)])
   }
 
   const startNewGame = (nextDifficulty: DifficultyId = game.difficulty) => {
+    sound('newGame')
     setGame(makeGame(nextDifficulty))
     setHistory([])
     setNotesMode(false)
     setToast('新棋局已生成')
+  }
+
+  const toggleSound = () => {
+    if (!soundEnabled) void playSound('toggle')
+    setSoundEnabled((current) => !current)
+    setToast(soundEnabled ? '音效已关闭' : '音效已开启')
+  }
+
+  const toggleNotes = () => {
+    if (game.paused || game.completed || gameOver) return
+    sound('toggle')
+    setNotesMode((current) => !current)
+  }
+
+  const togglePause = () => {
+    if (game.completed || gameOver) return
+    sound(game.paused ? 'resume' : 'pause')
+    setGame((current) => ({ ...current, paused: !current.paused }))
+  }
+
+  const resumeGame = () => {
+    sound('resume')
+    setGame((current) => ({ ...current, paused: false }))
+  }
+
+  const selectCell = (index: number) => {
+    if (index !== game.selected) sound('select')
+    setGame((current) => ({ ...current, selected: index }))
   }
 
   const enterNumber = (value: number) => {
@@ -205,6 +277,7 @@ function App() {
     remember()
 
     if (notesMode) {
+      sound('note')
       setGame((current) => {
         const notes = [...current.notes]
         notes[index] ^= 1 << value
@@ -213,12 +286,20 @@ function App() {
       return
     }
 
+    const isCorrect = value === game.solution[index]
+    const nextBoard = [...game.board]
+    nextBoard[index] = value
+    const completed = nextBoard.every(
+      (cellValue, cellIndex) => cellValue === game.solution[cellIndex],
+    )
+    const failed = !isCorrect && game.mistakes + 1 >= MAX_MISTAKES
+    sound(completed ? 'complete' : isCorrect ? 'correct' : failed ? 'failure' : 'error')
+
     setGame((current) => {
       const board = [...current.board]
       const notes = [...current.notes]
       board[index] = value
       notes[index] = 0
-      const isCorrect = value === current.solution[index]
       const mistakes = current.mistakes + (isCorrect ? 0 : 1)
 
       if (isCorrect) {
@@ -227,9 +308,6 @@ function App() {
         }
       }
 
-      const completed = board.every(
-        (cellValue, cellIndex) => cellValue === current.solution[cellIndex],
-      )
       return { ...current, board, notes, mistakes, completed }
     })
   }
@@ -245,6 +323,7 @@ function App() {
       return
     }
     if (game.board[index] === 0 && game.notes[index] === 0) return
+    sound('erase')
     remember()
     setGame((current) => {
       const board = [...current.board]
@@ -258,6 +337,7 @@ function App() {
   const undo = () => {
     const previous = history.at(-1)
     if (!previous || game.paused) return
+    sound('undo')
     setHistory((current) => current.slice(0, -1))
     setGame((current) => ({
       ...current,
@@ -269,6 +349,7 @@ function App() {
 
   const revealHint = () => {
     if (game.hints === 0) {
+      sound('error')
       setToast('本局提示已用完')
       return
     }
@@ -287,6 +368,12 @@ function App() {
         )
 
     if (index === -1) return
+    const nextBoard = [...game.board]
+    nextBoard[index] = game.solution[index]
+    const completed = nextBoard.every(
+      (cellValue, cellIndex) => cellValue === game.solution[cellIndex],
+    )
+    sound(completed ? 'complete' : 'hint')
     remember()
     setGame((current) => {
       const board = [...current.board]
@@ -297,9 +384,6 @@ function App() {
       for (let peer = 0; peer < 81; peer += 1) {
         if (cellsArePeers(index, peer)) notes[peer] &= ~(1 << value)
       }
-      const completed = board.every(
-        (cellValue, cellIndex) => cellValue === current.solution[cellIndex],
-      )
       return {
         ...current,
         board,
@@ -367,13 +451,15 @@ function App() {
     }
 
     const actions: Record<string, () => void> = {
-      n: () => setNotesMode((current) => !current),
-      N: () => setNotesMode((current) => !current),
+      n: toggleNotes,
+      N: toggleNotes,
       h: revealHint,
       H: revealHint,
-      p: () => setGame((current) => ({ ...current, paused: !current.paused })),
-      P: () => setGame((current) => ({ ...current, paused: !current.paused })),
-      ' ': () => setGame((current) => ({ ...current, paused: !current.paused })),
+      m: toggleSound,
+      M: toggleSound,
+      p: togglePause,
+      P: togglePause,
+      ' ': togglePause,
     }
     const action = actions[event.key]
     if (action) {
@@ -412,9 +498,21 @@ function App() {
           ))}
         </nav>
 
-        <div className="score-block" aria-label={`本局得分 ${score}`}>
-          <small>本局得分</small>
-          <strong>{score.toLocaleString()}</strong>
+        <div className="score-area">
+          <button
+            className={`sound-button${soundEnabled ? '' : ' muted'}`}
+            type="button"
+            aria-label={soundEnabled ? '关闭音效' : '开启音效'}
+            aria-pressed={!soundEnabled}
+            title={`${soundEnabled ? '关闭' : '开启'}音效（M）`}
+            onClick={toggleSound}
+          >
+            <Icon name={soundEnabled ? 'sound' : 'mute'} />
+          </button>
+          <div className="score-block" aria-label={`本局得分 ${score}`}>
+            <small>本局得分</small>
+            <strong>{score.toLocaleString()}</strong>
+          </div>
         </div>
       </header>
 
@@ -469,9 +567,7 @@ function App() {
                     aria-label={`第 ${row + 1} 行第 ${column + 1} 列${
                       value ? `，数字 ${value}` : '，空白'
                     }${fixed ? '，题目数字' : ''}`}
-                    onClick={() =>
-                      setGame((current) => ({ ...current, selected: index }))
-                    }
+                    onClick={() => selectCell(index)}
                   >
                     {value !== 0 ? (
                       <span className="cell-value">{value}</span>
@@ -501,9 +597,7 @@ function App() {
                 <button
                   className="primary compact"
                   type="button"
-                  onClick={() =>
-                    setGame((current) => ({ ...current, paused: false }))
-                  }
+                  onClick={resumeGame}
                 >
                   继续游戏
                 </button>
@@ -553,9 +647,7 @@ function App() {
                 type="button"
                 aria-label={game.paused ? '继续游戏' : '暂停游戏'}
                 disabled={game.completed || gameOver}
-                onClick={() =>
-                  setGame((current) => ({ ...current, paused: !current.paused }))
-                }
+                onClick={togglePause}
               >
                 <Icon name={game.paused ? 'play' : 'pause'} />
               </button>
@@ -580,7 +672,7 @@ function App() {
             <button
               className={notesMode ? 'active' : ''}
               type="button"
-              onClick={() => setNotesMode((current) => !current)}
+              onClick={toggleNotes}
               disabled={game.paused || game.completed || gameOver}
             >
               <span className="action-icon"><Icon name="note" /></span>
@@ -626,7 +718,7 @@ function App() {
           </button>
 
           <p className="keyboard-tip">
-            <kbd>1–9</kbd> 填数 <kbd>N</kbd> 笔记 <kbd>H</kbd> 提示
+            <kbd>1–9</kbd> 填数 <kbd>N</kbd> 笔记 <kbd>H</kbd> 提示 <kbd>M</kbd> 静音
           </p>
         </aside>
       </section>
