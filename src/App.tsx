@@ -17,6 +17,7 @@ type IconName =
   | 'play'
   | 'sound'
   | 'mute'
+  | 'restart'
 
 interface GameState {
   difficulty: DifficultyId
@@ -140,6 +141,12 @@ function Icon({ name }: { name: IconName }) {
         </>
       )}
       {name === 'play' && <path d="m9 7 8 5-8 5V7Z" />}
+      {name === 'restart' && (
+        <>
+          <path d="M8 7H4V3" />
+          <path d="M4.5 7.2A8.5 8.5 0 1 1 4 16" />
+        </>
+      )}
       {name === 'sound' && (
         <>
           <path d="M11 5 7 9H4v6h3l4 4V5Z" />
@@ -471,6 +478,15 @@ function App() {
   return (
     <main className="app" onKeyDown={handleKeyDown}>
       <header className="topbar">
+        <button
+          className="mobile-header-action mobile-restart"
+          type="button"
+          aria-label="重新开始本难度游戏"
+          onClick={() => startNewGame()}
+        >
+          <Icon name="restart" />
+        </button>
+
         <a className="brand" href="#game" aria-label="Sudoku 首页">
           <img
             className="brand-mark"
@@ -479,7 +495,10 @@ function App() {
             aria-hidden="true"
           />
           <span>
-            <strong>SUDOKU</strong>
+            <strong>
+              <span className="desktop-brand-title">SUDOKU</span>
+              <span className="mobile-brand-title">Sudoku</span>
+            </strong>
             <small>清醒思考，安静解题</small>
           </span>
         </a>
@@ -519,6 +538,47 @@ function App() {
       <div className="progress-track" aria-hidden="true">
         <span style={{ width: `${progress}%` }} />
       </div>
+
+      <section className="mobile-statusbar" aria-label="本局状态">
+        <label className="mobile-status mobile-difficulty">
+          <span>难度</span>
+          <select
+            aria-label="选择游戏难度"
+            value={game.difficulty}
+            onChange={(event) =>
+              startNewGame(event.target.value as DifficultyId)
+            }
+          >
+            {DIFFICULTIES.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <div className="mobile-status">
+          <span>错误</span>
+          <strong className={game.mistakes > 0 ? 'danger' : ''}>
+            {game.mistakes}<em>/{MAX_MISTAKES}</em>
+          </strong>
+        </div>
+        <div className="mobile-status">
+          <span>分数</span>
+          <strong>{score.toLocaleString()}</strong>
+        </div>
+        <div className="mobile-status mobile-time">
+          <span>时间</span>
+          <strong>{formatTime(game.elapsed)}</strong>
+          <button
+            type="button"
+            aria-label={game.paused ? '继续游戏' : '暂停游戏'}
+            disabled={game.completed || gameOver}
+            onClick={togglePause}
+          >
+            <Icon name={game.paused ? 'play' : 'pause'} />
+          </button>
+        </div>
+      </section>
 
       <section className="game-shell" id="game">
         <div className="board-column">
