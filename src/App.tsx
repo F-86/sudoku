@@ -18,6 +18,8 @@ type IconName =
   | 'sound'
   | 'mute'
   | 'restart'
+  | 'chevron'
+  | 'check'
 
 interface GameState {
   difficulty: DifficultyId
@@ -141,6 +143,8 @@ function Icon({ name }: { name: IconName }) {
         </>
       )}
       {name === 'play' && <path d="m9 7 8 5-8 5V7Z" />}
+      {name === 'chevron' && <path d="m6 9.5 6 6 6-6" />}
+      {name === 'check' && <path d="m5 12.5 4.5 4.5L19 7.5" />}
       {name === 'restart' && (
         <>
           <path d="M8 7H4V3" />
@@ -169,6 +173,7 @@ function App() {
   const [notesMode, setNotesMode] = useState(false)
   const [soundEnabled, setSoundEnabled] = useState(loadSoundEnabled)
   const [toast, setToast] = useState('')
+  const [difficultyOpen, setDifficultyOpen] = useState(false)
 
   const difficulty =
     DIFFICULTIES.find((item) => item.id === game.difficulty) ?? DIFFICULTIES[0]
@@ -560,22 +565,51 @@ function App() {
       </div>
 
       <section className="mobile-statusbar" aria-label="本局状态">
-        <label className="mobile-status mobile-difficulty">
-          <span>难度</span>
-          <select
-            aria-label="选择游戏难度"
-            value={game.difficulty}
-            onChange={(event) =>
-              startNewGame(event.target.value as DifficultyId)
-            }
+        <div className={`mobile-status mobile-difficulty${difficultyOpen ? ' open' : ''}`}>
+          <button
+            type="button"
+            className="difficulty-trigger"
+            aria-haspopup="listbox"
+            aria-expanded={difficultyOpen}
+            onClick={() => setDifficultyOpen((open) => !open)}
           >
-            {DIFFICULTIES.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.label}
-              </option>
-            ))}
-          </select>
-        </label>
+            <span>难度</span>
+            <strong>
+              {difficulty.label}
+              <Icon name="chevron" />
+            </strong>
+          </button>
+          {difficultyOpen && (
+            <>
+              <button
+                type="button"
+                className="difficulty-backdrop"
+                aria-label="关闭难度菜单"
+                tabIndex={-1}
+                onClick={() => setDifficultyOpen(false)}
+              />
+              <div className="difficulty-menu" role="listbox" aria-label="选择游戏难度">
+                <small>选择难度将开始新一局</small>
+                {DIFFICULTIES.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    role="option"
+                    aria-selected={item.id === game.difficulty}
+                    className={item.id === game.difficulty ? 'active' : ''}
+                    onClick={() => {
+                      setDifficultyOpen(false)
+                      if (item.id !== game.difficulty) startNewGame(item.id)
+                    }}
+                  >
+                    {item.label}
+                    {item.id === game.difficulty && <Icon name="check" />}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
         <div className="mobile-status">
           <span>错误</span>
           <strong className={game.mistakes > 0 ? 'danger' : ''}>

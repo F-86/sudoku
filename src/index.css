@@ -1087,13 +1087,10 @@ footer p {
     font-weight: 500;
   }
 
-  .mobile-status strong,
-  .mobile-status select {
+  .mobile-status strong {
     min-width: 0;
     margin: 0;
-    border: 0;
     color: #6e7b8e;
-    background: transparent;
     font: inherit;
     font-size: clamp(15px, 4.4vw, 19px);
     font-style: normal;
@@ -1114,12 +1111,129 @@ footer p {
     font-weight: 500;
   }
 
-  .mobile-difficulty select {
+  .mobile-difficulty {
+    position: relative;
+  }
+
+  .difficulty-trigger {
+    display: grid;
     width: 100%;
+    min-width: 0;
+    gap: 1px;
+    justify-items: center;
     padding: 0;
-    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
     cursor: pointer;
-    text-align-last: center;
+  }
+
+  .difficulty-trigger > span {
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .difficulty-trigger strong {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    color: #6e7b8e;
+    font-size: clamp(15px, 4.4vw, 19px);
+    font-weight: 500;
+    line-height: 1.3;
+    white-space: nowrap;
+  }
+
+  .difficulty-trigger svg {
+    width: 14px;
+    height: 14px;
+    color: #9aa7b8;
+    transition: transform 180ms ease;
+  }
+
+  .mobile-difficulty.open .difficulty-trigger svg {
+    transform: rotate(180deg);
+  }
+
+  .difficulty-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: default;
+  }
+
+  .difficulty-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    z-index: 61;
+    min-width: 172px;
+    padding: 6px;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow:
+      0 12px 32px rgba(31, 45, 61, 0.16),
+      0 2px 8px rgba(31, 45, 61, 0.08);
+    transform-origin: top left;
+    animation: difficulty-pop 160ms ease;
+  }
+
+  .difficulty-menu small {
+    display: block;
+    padding: 6px 12px 5px;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 500;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .difficulty-menu > button {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 11px 14px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    font-size: 15px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .difficulty-menu > button:active {
+    background: #eef3fa;
+  }
+
+  .difficulty-menu > button.active {
+    color: var(--blue);
+    font-weight: 700;
+  }
+
+  .difficulty-menu > button svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  @keyframes difficulty-pop {
+    from {
+      opacity: 0;
+      transform: translateY(-6px) scale(0.96);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
   }
 
   .mobile-time {
@@ -1337,7 +1451,7 @@ footer p {
   }
 
   .mobile-status strong,
-  .mobile-status select {
+  .difficulty-trigger strong {
     font-size: 14px;
   }
 
