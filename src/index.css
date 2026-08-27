@@ -1347,8 +1347,13 @@ footer p {
     font-size: clamp(18px, min(7.7vw, 5dvh), 36px);
   }
 
+  .notes-grid {
+    padding: 4%;
+  }
+
   .notes-grid i {
-    font-size: clamp(6px, min(1.8vw, 1.3dvh), 8px);
+    font-size: clamp(8px, min(2.7vw, 1.95dvh), 11px);
+    line-height: 1;
   }
 
   .actions {
