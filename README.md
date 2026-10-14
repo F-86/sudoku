@@ -1,55 +1,51 @@
-# Sudoku
+# Sudoku · 数独
 
-一个使用 React、TypeScript 和 Vite 开发的现代数独游戏。
+**[在线试玩 →](https://f-86.github.io/sudoku/)**
+
+![数独主游戏界面：棋盘、数字键盘与操作区](docs/screenshots/desktop.jpg)
+
+一个使用 React、TypeScript 和 Vite 开发的数独游戏，支持电脑和手机浏览器。
+
+## 玩法
+
+在空格中填入 1–9，让每一行、每一列和每个 3×3 宫内的数字都不重复。选择格子后，点击数字键盘或按 `1–9` 填数；不确定时可开启笔记记录候选数，或使用提示。
 
 ## 功能
 
-- 六档难度，每局随机生成且保证唯一解
-- 行、列、宫及相同数字高亮
-- 候选数字笔记、撤销、擦除和三次提示
-- 错误次数限制、计时、暂停和得分
-- 轻量交互音效与可持久记忆的静音开关
-- 键盘快捷键与响应式手机布局
-- 可安装到手机主屏幕，并支持离线运行
-- 自动保存当前游戏进度
+- 六档难度，随机生成题目并保证唯一解
+- 行、列、宫与相同数字高亮，支持笔记、撤销、擦除和每局三次提示
+- 计时、得分、错误次数限制与暂停，自动保存当前进度
+- 键盘快捷键、响应式手机布局与可记忆的静音开关
+- 支持添加到手机主屏幕，首次在线加载完成后可离线游玩
 
-## 本地运行
+## 游戏截图
+
+以下截图于 2026-10-14 直接截自[在线游戏](https://f-86.github.io/sudoku/)，未修改界面内容；题目为随机生成，每局棋盘会有所不同。主图为桌面视口，手机图为浏览器 390 × 844 视口展示。
+
+**手机端**：棋盘、操作区与单行数字键盘。
+
+<img src="docs/screenshots/mobile.jpg" alt="手机端数独界面：棋盘、操作按钮和单行数字键盘" width="390" />
+
+**笔记模式**：开启笔记后，可在空格中记录多个候选数。
+
+![笔记模式：前两个格子记录候选数，笔记按钮显示已开启](docs/screenshots/notes.jpg)
+
+## 本地启动
 
 ```bash
 npm install
 npm run dev
 ```
 
-开发服务器会监听局域网。手机与电脑连接同一 Wi-Fi 后，可打开终端显示的 `Network` 地址临时试玩；此方式需要电脑保持运行。
-
-## 手机上安装
-
-仓库包含 GitHub Pages 自动发布流程。首次需要在仓库的 `Settings → Pages` 中将 `Source` 设为 `GitHub Actions`，之后每次推送到 `main` 都会自动发布到：
-
-[https://f-86.github.io/sudoku/](https://f-86.github.io/sudoku/)
-
-- iPhone/iPad：使用 Safari 打开页面，点击分享按钮，然后选择“添加到主屏幕”。
-- Android：使用 Chrome 打开页面，在浏览器菜单中选择“安装应用”或“添加到主屏幕”。
-
-首次在线打开并等待页面加载完成后，应用会缓存游戏资源，之后断网也能启动。主屏幕安装和离线能力需要 HTTPS，因此推荐使用 GitHub Pages 地址，而不是局域网 HTTP 地址。
-
-## 可用命令
+打开终端显示的本地地址即可。手机与电脑连接同一 Wi-Fi 后，也可访问终端显示的 `Network` 地址；需要电脑保持运行。
 
 ```bash
-npm run dev
-npm run lint
-npm run build
-npm run build:pages
-npm run preview
+npm run lint         # 代码检查
+npm run build        # 构建
+npm run preview      # 预览构建结果
+npm run build:pages  # 构建 GitHub Pages 版本
 ```
 
-## 快捷键
+手机安装：使用 Safari（iPhone/iPad）或 Chrome（Android）打开[在线试玩](https://f-86.github.io/sudoku/)，选择“添加到主屏幕”或“安装应用”。安装及离线能力推荐通过 HTTPS 在线地址使用。
 
-- `1` 至 `9`：填写数字或候选数
-- `Backspace` / `Delete`：擦除
-- `N`：切换笔记模式
-- `H`：使用提示
-- `M`：开启或关闭音效
-- `P` / `Space`：暂停或继续
-- `Command/Ctrl + Z`：撤销
-- 方向键：移动选中格
+快捷键：`1–9` 填数，`N` 笔记，`H` 提示，`Backspace/Delete` 擦除，`Command/Ctrl + Z` 撤销，方向键移动，`P/Space` 暂停或继续，`M` 静音。
