@@ -77,6 +77,9 @@ const SOUND_PATTERNS: Record<SoundEffect, readonly Tone[]> = {
   ],
 }
 
+// +6 dB makes quiet effects clearer while preserving their relative balance.
+const SOUND_VOLUME_MULTIPLIER = 2
+
 let audioContext: AudioContext | null = null
 
 function getAudioContext() {
@@ -97,7 +100,7 @@ function scheduleTone(context: AudioContext, tone: Tone) {
   }
 
   gain.gain.setValueAtTime(0.0001, start)
-  gain.gain.exponentialRampToValueAtTime(tone.volume, start + 0.008)
+  gain.gain.exponentialRampToValueAtTime(tone.volume * SOUND_VOLUME_MULTIPLIER, start + 0.008)
   gain.gain.exponentialRampToValueAtTime(0.0001, end)
 
   oscillator.connect(gain)
